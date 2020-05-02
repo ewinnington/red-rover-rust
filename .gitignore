@@ -2,4 +2,4 @@ hello_world/target
 cli-redis/target
 cli-pgsql/target
 cli-rabbitmq/target
-
+rust-serve-rest/target

@@ -49,3 +49,16 @@ cargo build --bin cli-send
 cargo build --bin cli-receive
 
 ## RestServer + Client
+
+I'll be using the Actix-web framework to serve a Rest Repository. And using [Romaric P.'s Create a blazingly fast REST API in Rust](https://docs.qovery.com/guides/tutorial/create-a-blazingly-fast-api-in-rust-part-1/) tutorial as a reference. 
+
+[dependencies]
+actix-rt = "1.1.0"
+actix-web = "3.0.0"
+env_logger = "0.7.1"
+// Serde used here for the json serialisation but supports many formats   https://serde.rs/
+serde = "1.0.106"
+serde_json = "1.0.51"
+// time library https://docs.rs/chrono/0.4.11/chrono/
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "0.6", features = ["serde", "v4"] }
