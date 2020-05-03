@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate actix_web;
 
+#[macro_use]
+extern crate lazy_static;
+
 use std::{env, io};
 use actix_web::{middleware, web, App, HttpResponse, HttpServer, Responder};
 

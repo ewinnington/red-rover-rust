@@ -1,15 +1,10 @@
+use std::collections::HashMap;
+
 use uuid::Uuid;
 use chrono::{DateTime, Utc};
 use serde::{Serialize, Deserialize};
 use actix_web::web::{Json, Path};
 use actix_web::{HttpResponse};
-
-//We will be storing the Events in-memory / Vector mutable state 
-//therefore we need some synchronisation
-//in reality we would probably use a DB
-//but I wanted to learn to share
-use std::sync::{Arc, Mutex};
-use std::thread;
 
 //Importing constants
 use crate::constants::APPLICATION_JSON;
@@ -48,6 +43,14 @@ impl EventRequest {
     }
 }
 
+lazy_static! {
+    static ref HASHMAP: HashMap<String, Event> = {
+        let mut m = HashMap::new();
+        m.insert(Uuid::new_v4().to_string(), Event::new("First event".to_string()));
+        m
+    };
+}
+
 /// list 50 last event `/events`
 #[get("/events")]
 pub async fn list() -> HttpResponse {
@@ -72,7 +75,14 @@ pub async fn create(event_req: Json<EventRequest>) -> HttpResponse {
 #[get("/events/{id}")]
 pub async fn get(path: Path<(String,)>) -> HttpResponse {
     
-    let found_event: Option<Event> = None;
+    let mut found_event: Option<Event> = None;
+
+    let id = path.0.as_str(); 
+    if HASHMAP.contains_key(id)
+    {
+        let myEvent = HASHMAP.get(id);
+        found_event = myEvent;
+    }
 
     match found_event {
         Some(event) => HttpResponse::Ok()
@@ -89,6 +99,9 @@ pub async fn get(path: Path<(String,)>) -> HttpResponse {
 #[delete("/events/{id}")]
 pub async fn delete(path: Path<(String,)>) -> HttpResponse {
     
+    let id = path.0.as_str(); 
+    //HASHMAP.remove_entry(&id); 
+
     HttpResponse::NoContent()
         .content_type(APPLICATION_JSON)
         .await

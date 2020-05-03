@@ -62,3 +62,11 @@ serde_json = "1.0.51"
 // time library https://docs.rs/chrono/0.4.11/chrono/
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "0.6", features = ["serde", "v4"] }
+
+Instead of storing the Events in a database or in Redis, I was trying to store them inside the Rust application, in a globally accessible variable. For that I am using a HashMap that is declared with lazy_static to make it accessible as a global variable from multiple threads. 
+This requires the crate lazy_static: 
+
+References: 
+
+- https://doc.rust-lang.org/std/collections/struct.HashMap.html
+- https://crates.io/crates/lazy_static
