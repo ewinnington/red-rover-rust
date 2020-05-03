@@ -30,7 +30,7 @@ async fn main() -> io::Result<()> {
             .service(event::create)
             .service(event::delete)
     })
-    .bind("0.0.0.0:9090")?
+    .bind("localhost:9090")?
     .run()
     .await
 }
