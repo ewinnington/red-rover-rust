@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::sync::Mutex;
 
 use uuid::Uuid;
 use chrono::{DateTime, Utc};
@@ -12,7 +13,7 @@ use crate::response::Response;
 
 pub type Events = Response<Event>;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Event {
     pub id: String,
     pub created_at: DateTime<Utc>,
@@ -44,9 +45,10 @@ impl EventRequest {
 }
 
 lazy_static! {
-    static ref HASHMAP: HashMap<String, Event> = {
-        let mut m = HashMap::new();
-        m.insert(Uuid::new_v4().to_string(), Event::new("First event".to_string()));
+    static ref HASHMAP: Mutex<HashMap<String, Event>> = {
+        let m = Mutex::new(HashMap::new());
+        let e = Event::new("First event".to_string()); 
+        m.lock().unwrap().insert(e.id.to_string(), e);
         m
     };
 }
@@ -54,8 +56,9 @@ lazy_static! {
 /// list 50 last event `/events`
 #[get("/events")]
 pub async fn list() -> HttpResponse {
-    let events = Events { results: vec![] };
+    //let events = Events { results: vec![] };
 
+    let events = Events { results: HASHMAP.lock().unwrap().values().cloned().collect() };
     HttpResponse::Ok()
         .content_type(APPLICATION_JSON)
         .json(events)
@@ -65,6 +68,8 @@ pub async fn list() -> HttpResponse {
 #[post("/events")]
 pub async fn create(event_req: Json<EventRequest>) -> HttpResponse {
     
+    let e = event_req.to_event().unwrap();
+    HASHMAP.lock().unwrap().insert(e.id.to_string(), e);
     
     HttpResponse::Created()
         .content_type(APPLICATION_JSON)
@@ -74,16 +79,11 @@ pub async fn create(event_req: Json<EventRequest>) -> HttpResponse {
 /// find a event by its id `/events/{id}`
 #[get("/events/{id}")]
 pub async fn get(path: Path<(String,)>) -> HttpResponse {
-    
-    let mut found_event: Option<Event> = None;
-
     let id = path.0.as_str(); 
-    if HASHMAP.contains_key(id)
-    {
-        let myEvent = HASHMAP.get(id);
-        found_event = myEvent;
-    }
 
+    let map = HASHMAP.lock().unwrap(); 
+    let found_event = map.get(id);
+  
     match found_event {
         Some(event) => HttpResponse::Ok()
             .content_type(APPLICATION_JSON)
@@ -100,7 +100,8 @@ pub async fn get(path: Path<(String,)>) -> HttpResponse {
 pub async fn delete(path: Path<(String,)>) -> HttpResponse {
     
     let id = path.0.as_str(); 
-    //HASHMAP.remove_entry(&id); 
+    let mut map = HASHMAP.lock().unwrap(); 
+    map.remove_entry(id);
 
     HttpResponse::NoContent()
         .content_type(APPLICATION_JSON)

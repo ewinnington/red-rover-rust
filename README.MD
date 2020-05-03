@@ -63,10 +63,17 @@ serde_json = "1.0.51"
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "0.6", features = ["serde", "v4"] }
 
-Instead of storing the Events in a database or in Redis, I was trying to store them inside the Rust application, in a globally accessible variable. For that I am using a HashMap that is declared with lazy_static to make it accessible as a global variable from multiple threads. 
+Instead of storing the Events in a database or in Redis, I was trying to store them inside the Rust application, in a globally accessible variable. For that I am using a HashMap that is declared with lazy_static to make it accessible as a global variable from multiple threads. I then have to Mutex it to make sure the access is single threaded.
 This requires the crate lazy_static: 
 
 References: 
 
 - https://doc.rust-lang.org/std/collections/struct.HashMap.html
 - https://crates.io/crates/lazy_static
+
+
+### Testing 
+
+curl -X DELETE http://localhost:9090/events/50c2ee4d-1679-46a4-afd8-3fcb95fd0d6f
+
+curl -H "Content-Type: application/json" -X POST -d {\"name\":\"MyEventFromPOST\"} http://localhost:9090/events
