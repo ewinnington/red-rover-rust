@@ -1,0 +1,12 @@
+# Install the REST Client extension to use the .rest files 
+
+POST http://localhost:9090/events HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample"
+}
+
+###
+
+GET http://localhost:9090/events HTTP/1.1
