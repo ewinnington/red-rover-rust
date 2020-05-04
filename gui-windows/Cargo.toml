@@ -1,0 +1,11 @@
+[package]
+name = "gui-windows"
+version = "0.1.0"
+authors = ["Eric Winnington <eric.in.the.net@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+native-windows-gui = { git = "https://github.com/gabdube/native-windows-gui", branch = "1.0-prerelease" }
+native-windows-derive =  { git = "https://github.com/gabdube/native-windows-gui", branch = "1.0-prerelease" }

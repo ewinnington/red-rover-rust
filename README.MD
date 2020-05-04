@@ -77,3 +77,13 @@ References:
 curl -X DELETE http://localhost:9090/events/50c2ee4d-1679-46a4-afd8-3fcb95fd0d6f
 
 curl -H "Content-Type: application/json" -X POST -d {\"name\":\"MyEventFromPOST\"} http://localhost:9090/events
+
+
+## GUI
+
+have to clone it out and target the 1.0-prerelease branch! 
+https://github.com/gabdube/native-windows-gui
+
+[dependencies]
+native-windows-gui = { git = "https://github.com/gabdube/native-windows-gui", branch = "1.0-prerelease" }
+native-windows-derive =  { git = "https://github.com/gabdube/native-windows-gui", branch = "1.0-prerelease" }

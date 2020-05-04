@@ -4,3 +4,4 @@ cli-pgsql/target
 cli-rabbitmq/target
 rust-serve-rest/target
 rust-client-rest/target
+gui-windows/target
