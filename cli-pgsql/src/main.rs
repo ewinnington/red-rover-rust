@@ -1,5 +1,5 @@
 extern crate postgres;
-use postgres::{Client, NoTls};
+use postgres::{Client, NoTls, Statement};
 
 fn main() {
     let mut client = Client::connect("host=localhost port=5432 user=docker password=XdccDa85_JK dbname=docker sslmode=disable", NoTls).unwrap();
@@ -12,8 +12,8 @@ fn main() {
     
     // I have an issue with prepared statement execution in Rust, but at least the rest works fine
 
-    //let statement = client.prepare("INSERT INTO currencies (name) VALUES ($1)").unwrap(); 
-    //let _ = statement.execute(&["EUR"]); 
+    let statement = client.prepare("INSERT INTO currencies (name) VALUES ($1)").unwrap(); 
+    let _ = statement.execute(&["CHF"]); 
     println!("Queried");
     for row in client.query("SELECT id, name FROM currencies", &[]).unwrap() {
         let id: i32 = row.get(0);
