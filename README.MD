@@ -23,6 +23,11 @@ version = "*"
 
 ## Postgresql
 
+
+```
+docker run -d -p 5432:5432 --name pdgb-1 -e POSTGRES_USER=docker -e POSTGRES_PASSWORD=XdccDa85_JK -e POSTGRES_DB=docker postgres 
+```
+
 [dependencies]
 postgres = "*"
 
